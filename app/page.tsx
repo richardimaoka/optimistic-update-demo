@@ -1,63 +1,107 @@
-import Image from "next/image";
+"use client";
+
+import { useState, ChangeEvent, KeyboardEvent } from "react";
+
+// 野菜の型定義
+interface Vegetable {
+  id: number;
+  name: string;
+  quantity: number;
+}
+
+// 初期データ
+const initialVegetables: Vegetable[] = [
+  { id: 1, name: "トマト", quantity: 10 },
+  { id: 2, name: "きゅうり", quantity: 20 },
+  { id: 3, name: "にんじん", quantity: 15 },
+  { id: 4, name: "じゃがいも", quantity: 30 },
+  { id: 5, name: "たまねぎ", quantity: 25 },
+];
 
 export default function Home() {
+  const [vegetables, setVegetables] =
+    useState<Vegetable[]>(initialVegetables);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [tempQuantity, setTempQuantity] = useState<number>(0);
+
+  const handleQuantityClick = (vegetable: Vegetable) => {
+    setEditingId(vegetable.id);
+    setTempQuantity(vegetable.quantity);
+  };
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setTempQuantity(Number(e.target.value));
+  };
+
+  const handleInputBlur = (id: number) => {
+    setVegetables(
+      vegetables.map((veg) =>
+        veg.id === id ? { ...veg, quantity: tempQuantity } : veg
+      )
+    );
+    setEditingId(null);
+  };
+
+  const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>, id: number) => {
+    if (e.key === "Enter") {
+      handleInputBlur(id);
+    }
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans">
+      <main className="w-full max-w-lg p-8 bg-white rounded-lg shadow-md">
+        <h1 className="text-2xl font-semibold mb-6 text-center text-zinc-800">
+          野菜の棚卸し
+        </h1>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  品目
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  数量
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {vegetables.map((vegetable) => (
+                <tr key={vegetable.id}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {vegetable.name}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {editingId === vegetable.id ? (
+                      <input
+                        type="number"
+                        value={tempQuantity}
+                        onChange={handleInputChange}
+                        onBlur={() => handleInputBlur(vegetable.id)}
+                        onKeyDown={(e) => handleInputKeyDown(e, vegetable.id)}
+                        autoFocus
+                        className="w-20 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                      />
+                    ) : (
+                      <span
+                        className="cursor-pointer"
+                        onClick={() => handleQuantityClick(vegetable)}
+                      >
+                        {vegetable.quantity}
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </main>
     </div>
