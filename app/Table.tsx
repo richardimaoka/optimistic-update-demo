@@ -1,16 +1,18 @@
 "use client";
 
 import { Vegetable } from "@/types/types";
+import { useState } from "react";
 
 type Props = {
   vegetables: Vegetable[];
 };
 
 export function Table(props: Props) {
-  // const handleQuantityClick = (vegetable: Vegetable) => {
-  //   setEditingId(vegetable.id);
-  //   setTempQuantity(vegetable.quantity);
-  // };
+  const [editingId, setEditingId] = useState<number | null>(null);
+
+  const handleQuantityClick = (vegetable: Vegetable) => {
+    setEditingId(vegetable.id);
+  };
 
   // const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
   //   setTempQuantity(Number(e.target.value));
@@ -64,23 +66,25 @@ export function Table(props: Props) {
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {vegetable.name}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {/* {editingId === vegetable.id ? (
+                  {editingId === vegetable.id ? (
+                    <td className="px-6 whitespace-nowrap text-sm text-gray-500">
                       <input
                         type="number"
                         defaultValue={vegetable.quantity}
                         autoFocus
-                        className="w-20 rounded-md border-gray-300 shadow-sm focus:outline-none"
+                        className="py-2 w-10 rounded-md border-gray-300 shadow-sm focus:outline-none"
                       />
-                    ) : ( */}
-                    <span
-                      className="cursor-pointer"
-                      // onClick={() => handleQuantityClick(vegetable)}
-                    >
-                      {vegetable.quantity}
-                    </span>
-                    {/* )} */}
-                  </td>
+                    </td>
+                  ) : (
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <span
+                        className="cursor-pointer"
+                        onClick={() => handleQuantityClick(vegetable)}
+                      >
+                        {vegetable.quantity}
+                      </span>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
