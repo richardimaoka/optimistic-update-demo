@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, ChangeEvent, KeyboardEvent } from "react";
+import { ChangeEvent, KeyboardEvent, useState } from "react";
 
 // 野菜の型定義
 interface Vegetable {
@@ -19,8 +19,7 @@ const initialVegetables: Vegetable[] = [
 ];
 
 export default function Home() {
-  const [vegetables, setVegetables] =
-    useState<Vegetable[]>(initialVegetables);
+  const [vegetables, setVegetables] = useState<Vegetable[]>(initialVegetables);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [tempQuantity, setTempQuantity] = useState<number>(0);
 
@@ -42,7 +41,10 @@ export default function Home() {
     setEditingId(null);
   };
 
-  const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>, id: number) => {
+  const handleInputKeyDown = (
+    e: KeyboardEvent<HTMLInputElement>,
+    id: number
+  ) => {
     if (e.key === "Enter") {
       handleInputBlur(id);
     }
@@ -87,7 +89,7 @@ export default function Home() {
                         onBlur={() => handleInputBlur(vegetable.id)}
                         onKeyDown={(e) => handleInputKeyDown(e, vegetable.id)}
                         autoFocus
-                        className="w-20 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        className="w-20 rounded-md border-gray-300 shadow-sm focus:outline-none"
                       />
                     ) : (
                       <span
