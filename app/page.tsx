@@ -55,7 +55,7 @@ export default function Home() {
           野菜の棚卸し
         </h1>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-full divide-y divide-gray-200">
+          <table className="w-full min-w-full divide-y divide-gray-200 table-fixed">
             <thead className="bg-gray-50">
               <tr>
                 <th
